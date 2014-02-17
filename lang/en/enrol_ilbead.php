@@ -109,13 +109,10 @@ If you have not done so already, you should edit your profile page so that we ca
 
   {$a->profileurl}';
 $string['maxongoing'] = 'Max ongoing ILB EAD courses';
+$string['maxongoing_help'] = 'Maximum simultaneos EAD courses that the user can enroll themself.';
 $string['ongoingcourses'] = 'List of ongoing courses';
 $string['abandonedcourses'] = 'Abandoned courses';
 $string['enrolledat'] = 'enrolled at';
 $string['abandonalert'] = 'You have abandoned courses and cannot enroll in new courses.';
-$string[''] = '';
-$string[''] = '';
-$string[''] = '';
-$string[''] = '';
-$string[''] = '';
-$string[''] = '';
+$string['abandonpunishment'] = 'Days of punishment for abandon';
+$string['abandonpunishment_help'] = 'Number of days that the user cannot enroll in another ILB EAD course after abandon any ILB EAD course.';
