@@ -222,29 +222,23 @@ class enrol_ilbead_plugin extends enrol_plugin {
         }
 
         if ($instance->customint7 !== null and $instance->customint7 > 0) {
-            $ongoing = $this->get_ongoing();
+            $ongoing = $this->get_ongoing($instance);
             if (count($ongoing) >= $instance->customint7) {
                 // Max ongoing EAD courses reached. New enrol not allowed
-                $s  = get_string('maxongoing', 'enrol_ilbead').'<br/><br/>';
-                $s .= '<strong>' . get_string('ongoingcourses', 'enrol_ilbead') . ':</strong><br/>';
+                $error  = $OUTPUT->error_text(get_string('maxongoing', 'enrol_ilbead'));
+                $error .= '<br/><br/><p>'.get_string('maxongoingmessage', 'enrol_ilbead', count($ongoing)).'</p>';
+                $error .= '<p><strong>'.get_string('ongoingcourses', 'enrol_ilbead').'</strong></p>';
+                $table = new html_table();
+                $table->head = array(get_string('coursename', 'enrol_ilbead'), get_string('timestart', 'enrol_ilbead'), get_string('timeend', 'enrol_ilbead'), get_string('abandonpunishment', 'enrol_ilbead'));
+                $tabledata = array();
                 foreach ($ongoing as $course) {
-                    $s .= "{$course->fullname}<br/>";
+                    $link = '<a href="'.course_get_url($course).'">'.$course->fullname.'</a>';
+                    $tabledata[] = array($link, userdate($course->timestart), userdate($course->timeend), $course->abandonpunishment);
                 }
-                return $OUTPUT->box($s);
-            }
-        }
-
-        if ($instance->customint8 !== null and $instance->customint8 > 0) {
-            $abandoned = $this->abandon_courses($instance);
-            if (count($abandoned) > 0) {
-                $s  = get_string('abandonalert', 'enrol_ilbead').'<br/><br/>';
-                $s .= '<strong>' . get_string('abandonedcourses', 'enrol_ilbead') . ':</strong><br/>';
-                $enrolledat = get_string('enrolledat', 'enrol_ilbead');
-                foreach ($abandoned as $course) {
-                    $date = userdate($course->timecreated);
-                    $s .= "{$course->fullname}, $enrolledat $date<br/>";
-                }
-                return $OUTPUT->box($s);
+                $table->data = $tabledata;
+                $error .= html_writer::table($table);
+                $error = $OUTPUT->box($error).$OUTPUT->continue_button("$CFG->wwwroot/index.php");
+                return $error;
             }
         }
 
@@ -617,19 +611,20 @@ class enrol_ilbead_plugin extends enrol_plugin {
      * @return array ongoing EAD courses
      */
 
-    public function get_ongoing() {
+    public function get_ongoing($instance) {
         global $DB;
         global $USER;
-        return $DB->get_records_sql("
-            select ue.timecreated, c.fullname
-            from {user_enrolments} ue
-              join {enrol} e on e.id = ue.enrolid
-              join {course} c on c.id = e.courseid
-              left outer join {course_completions} cc on cc.userid = ue.userid and cc.course = e.courseid
-            where e.enrol = 'ilbead'
-              and cc.timecompleted is null
-              and ue.timecreated > ?
-              and ue.userid = ?", array(time() - (60*86400), $USER->id));
+        $sql = "select c.*, ue.timestart, ue.timeend, e.customint8 as abandonpunishment
+                from {user_enrolments} ue
+                  join {enrol} e on e.id = ue.enrolid
+                  join {course} c on c.id = e.courseid
+                  left outer join {course_completions} cc on cc.userid = ue.userid and cc.course = e.courseid
+                where e.enrol = 'ilbead'
+                  and cc.timecompleted is null
+                  and ue.userid = ?
+                  and ? between ue.timestart and ue.timeend + (e.customint8*86400)";
+        $time = time();
+        return $DB->get_records_sql($sql, array($USER->id, time()));
     }
 
     /**
@@ -644,40 +639,12 @@ class enrol_ilbead_plugin extends enrol_plugin {
             return false; // We have not a max ongoing, then its never reached
         }
 
-        $ongoing = $this->get_ongoing();
+        $ongoing = $this->get_ongoing($instance);
  
         if (count($ongoing) >= $instance->customint7) {
             return true; // Max ongoing reached
         }
 
         return false; // Default max not reached
-    }
-
-    /**
-     * Abandon courses
-     * Get all abandoned courses in last 'customint8' days
-     *
-     * @param stdClass $instance
-     * @return array of courses
-     */
-
-    public function abandon_courses($instance) {
-        global $DB;
-        global $USER;
-
-        if ($instance->customint8 == null or $instance->customint8 == 0) {
-            return null; // No abandon punishment
-        }
-
-        return $DB->get_records_sql("
-            select ue.timecreated, c.fullname
-            from {user_enrolments} ue
-              join {enrol} e on e.id = ue.enrolid
-              join {course} c on c.id = e.courseid
-              left outer join {course_completions} cc on cc.userid = ue.userid and cc.course = e.courseid
-            where e.enrol = 'ilbead'
-              and cc.timecompleted is null
-              and ue.userid = ?
-              and ? between ue.timecreated + ? and ue.timecreated + ?", array($USER->id, time(), 60*86400, (60+$instance->customint8)*86400));
     }
 }

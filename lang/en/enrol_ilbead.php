@@ -116,3 +116,7 @@ $string['enrolledat'] = 'enrolled at';
 $string['abandonalert'] = 'You have abandoned courses and cannot enroll in new courses.';
 $string['abandonpunishment'] = 'Days of punishment for abandon';
 $string['abandonpunishment_help'] = 'Number of days that the user cannot enroll in another ILB EAD course after abandon any ILB EAD course.';
+$string['coursename'] = 'Course name';
+$string['timestart'] = 'Time start';
+$string['timeend'] = 'Expected time end';
+$string['maxongoingmessage'] = 'You are already enrolled in {$a} ILB/EAD courses, New enrollments will only be accepted after the completion of at least one of them.';

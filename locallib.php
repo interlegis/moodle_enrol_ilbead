@@ -63,16 +63,6 @@ class enrol_ilbead_enrol_form extends moodleform {
             }
         }
 
-        if ($plugin->max_ongoing_reached($instance)) {
-            $ongoing = $plugin->get_ongoing($instance);
-            $mform->addElement('static', 'notice', '', get_string('maxongoing', 'enrol_ilbead'));
-            $mform->addElement('static', 'notice', '', get_string('ongoingcourses', 'enrol_ilbead'));
-            foreach ($ongoing as $course) {
-                $mform->addElement('static', 'notice', '', $course->fullname);
-            }
-            return;
-        }
-
         if ($instance->password) {
             // Change the id of ilbead enrolment key input as there can be multiple ilbead enrolment methods.
             $mform->addElement('passwordunmask', 'enrolpassword', get_string('password', 'enrol_ilbead'),
