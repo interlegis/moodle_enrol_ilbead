@@ -48,6 +48,7 @@ $plugin = enrol_get_plugin('ilbead');
 
 if ($instanceid) {
     $instance = $DB->get_record('enrol', array('courseid'=>$course->id, 'enrol'=>'ilbead', 'id'=>$instanceid), '*', MUST_EXIST);
+    $instance->customtext2 = unserialize($instance->customtext2);
 
 } else {
     require_capability('moodle/course:enrolconfig', $context);
@@ -102,6 +103,7 @@ if ($mform->is_cancelled()) {
         $instance->customint7     = $data->customint7;
         $instance->customint8     = $data->customint8;
         $instance->customtext1    = $data->customtext1;
+        $instance->customtext2    = serialize($data->customtext2);
         $instance->roleid         = $data->roleid;
         $instance->enrolperiod    = $data->enrolperiod;
         $instance->expirynotify   = $data->expirynotify;
@@ -130,6 +132,7 @@ if ($mform->is_cancelled()) {
             'customint7'      => $data->customint7,
             'customint8'      => $data->customint8,
             'customtext1'     => $data->customtext1,
+            'customtext2'     => serialize($data->customtext2),
             'roleid'          => $data->roleid,
             'enrolperiod'     => $data->enrolperiod,
             'expirynotify'    => $data->expirynotify,

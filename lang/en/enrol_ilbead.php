@@ -120,3 +120,5 @@ $string['coursename'] = 'Course name';
 $string['timestart'] = 'Time start';
 $string['timeend'] = 'Expected time end';
 $string['maxongoingmessage'] = 'You are already enrolled in {$a} ILB/EAD courses, New enrollments will only be accepted after the completion of at least one of them.';
+$string['customenrolmessage'] = 'Custom enrol message';
+$string['customenrolmessage_help'] = 'A custom message may be displayed at enrol form as plain text or Moodle-auto format, including HTML tags and multi-lang tags.';

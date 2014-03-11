@@ -501,6 +501,7 @@ class enrol_ilbead_plugin extends enrol_plugin {
         }
 
         $instance = $DB->get_record('enrol', array('id'=>$instanceid, 'enrol'=>$this->get_name()), '*', MUST_EXIST);
+        $instance->customtext2 = unserialize($instance->customtext2);
         $context = context_course::instance($instance->courseid);
 
         if ($users = get_enrolled_users($context, 'enrol/ilbead:manage')) {

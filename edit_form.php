@@ -150,6 +150,9 @@ class enrol_ilbead_edit_form extends moodleform {
         $mform->addElement('textarea', 'customtext1', get_string('customwelcomemessage', 'enrol_ilbead'), array('cols'=>'60', 'rows'=>'8'));
         $mform->addHelpButton('customtext1', 'customwelcomemessage', 'enrol_ilbead');
 
+        $mform->addElement('editor', 'customtext2', get_string('customenrolmessage', 'enrol_ilbead'));
+        $mform->addHelpButton('customtext2', 'customenrolmessage', 'enrol_ilbead');
+
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
         $mform->addElement('hidden', 'courseid');

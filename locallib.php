@@ -52,6 +52,12 @@ class enrol_ilbead_enrol_form extends moodleform {
         $heading = $plugin->get_instance_name($instance);
         $mform->addElement('header', 'ilbeadheader', $heading);
 
+        if (trim($instance->customtext2) !== '') {
+            $instance->customtext2 = unserialize($instance->customtext2);
+            $message = format_text($instance->customtext2['text'], $instance->customtext2['format']);
+            $mform->addElement('static', 'notice', '', $message);
+        }
+
         if ($instance->customint3 > 0) {
             // Max enrol limit specified.
             $count = $DB->count_records('user_enrolments', array('enrolid'=>$instance->id));
