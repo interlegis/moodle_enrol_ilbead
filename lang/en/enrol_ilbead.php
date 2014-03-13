@@ -122,3 +122,7 @@ $string['timeend'] = 'Expected time end';
 $string['maxongoingmessage'] = 'You are already enrolled in {$a} ILB/EAD courses, New enrollments will only be accepted after the completion of at least one of them.';
 $string['customenrolmessage'] = 'Custom enrol message';
 $string['customenrolmessage_help'] = 'A custom message may be displayed at enrol form as plain text or Moodle-auto format, including HTML tags and multi-lang tags.';
+$string['samecoursealert'] = 'Wrong classroom!';
+$string['samecoursemessage'] = 'You are already enrolled in this course, but in another class!<br/>
+Your correct classroom is {$a}.';
+$string['alreadyenroled'] = 'You are already enrolled in this but cannot access them.'; 

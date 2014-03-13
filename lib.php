@@ -201,9 +201,10 @@ class enrol_ilbead_plugin extends enrol_plugin {
             // Can not enrol guest!!
             return null;
         }
+
         if ($DB->record_exists('user_enrolments', array('userid'=>$USER->id, 'enrolid'=>$instance->id))) {
-            //TODO: maybe we should tell them they are already enrolled, but can not access the course
-            return null;
+            $error = get_string('alreadyenroled', 'enrol_ilbead');
+            return $OUTPUT->box($error).$OUTPUT->continue_button("$CFG->wwwroot/index.php");
         }
 
         if ($instance->enrolstartdate != 0 and $instance->enrolstartdate > time()) {
@@ -221,8 +222,9 @@ class enrol_ilbead_plugin extends enrol_plugin {
             return null;
         }
 
+        $ongoing = $this->get_ongoing($instance);
+
         if ($instance->customint7 !== null and $instance->customint7 > 0) {
-            $ongoing = $this->get_ongoing($instance);
             if (count($ongoing) >= $instance->customint7) {
                 // Max ongoing EAD courses reached. New enrol not allowed
                 $error  = $OUTPUT->error_text(get_string('maxongoing', 'enrol_ilbead'));
@@ -237,6 +239,22 @@ class enrol_ilbead_plugin extends enrol_plugin {
                 }
                 $table->data = $tabledata;
                 $error .= html_writer::table($table);
+                $error = $OUTPUT->box($error).$OUTPUT->continue_button("$CFG->wwwroot/index.php");
+                return $error;
+            }
+        }
+
+        $course = $DB->get_record('course', array('id'=>$instance->courseid), '*', MUST_EXIST);
+        $course_prefix = explode('.', $course->idnumber);
+        $course_prefix = $course_prefix[0];
+
+        foreach ($ongoing as $course) {
+            $ongoing_prefix = explode('.', $course->idnumber);
+            $ongoing_prefix = $ongoing_prefix[0];
+            if ($course_prefix == $ongoing_prefix) {
+                $error  = $OUTPUT->error_text(get_string('samecoursealert', 'enrol_ilbead'));
+                $link = '<a href="'.course_get_url($course).'">'.$course->fullname.'</a>';
+                $error .= '<br/><br/><p>'.get_string('samecoursemessage', 'enrol_ilbead', $link).'</p>';
                 $error = $OUTPUT->box($error).$OUTPUT->continue_button("$CFG->wwwroot/index.php");
                 return $error;
             }

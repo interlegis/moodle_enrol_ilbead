@@ -122,3 +122,7 @@ $string['timeend'] = 'Data prevista de término';
 $string['maxongoingmessage'] = 'Você já está matriculado em {$a} curso(s) sem tutoria, Novas matrículas somente serão aceitas após a conclusão de pelo menos um deles.';
 $string['customenrolmessage'] = 'Mensagem personalizada de matrícula';
 $string['customenrolmessage_help'] = 'Uma mensagem personalizada que pode ser exibida no formulário de inscrição como um texto plano ou no padrão de autoformatação Moodle, incluindo tags HTML e multi-linguagem.';
+$string['samecoursealert'] = 'Turma errada!';
+$string['samecoursemessage'] = 'Você já está matriculado neste curso, mas em outra turma!<br/>
+Sua turma correta é {$a}.';
+$string['alreadyenroled'] = 'Você já está inscrito neste curso mas não pode acessá-lo.';
